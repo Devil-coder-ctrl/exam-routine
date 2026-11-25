@@ -600,3 +600,33 @@ input {
     transition: none !important;
   }
 }
+.auth-col {
+  width: 100%;
+  max-width: 340px;
+}
+.auth-col .auth-card {
+  max-width: none;
+}
+
+.site-footer {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.site-footer p {
+  margin: 0 0 4px;
+}
+.site-footer strong {
+  color: var(--text);
+}
+.site-footer a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+.site-footer a:hover {
+  text-decoration: underline;
+}

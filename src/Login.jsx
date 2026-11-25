@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
+import Footer from "./Footer";
 
 const messages = {
   "auth/invalid-credential":
@@ -110,61 +111,65 @@ export default function Login() {
       </section>
 
       <main className="auth-main">
-        <form className="auth-card" onSubmit={submit}>
-          <h2>{isNew ? "Create your account" : "Welcome back"}</h2>
-          <p className="sub">
-            {isNew
-              ? "Sign up once, then search any time."
-              : "Log in to see your exam routine."}
-          </p>
-
-          {error && (
-            <p className="error" role="alert">
-              {error}
+        <div className="auth-col">
+          <form className="auth-card" onSubmit={submit}>
+            <h2>{isNew ? "Create your account" : "Welcome back"}</h2>
+            <p className="sub">
+              {isNew
+                ? "Sign up once, then search any time."
+                : "Log in to see your exam routine."}
             </p>
-          )}
 
-          <label className="field">
-            <span>Email</span>
-            <input
-              type="email"
-              value={email}
-              autoComplete="email"
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
 
-          <label className="field">
-            <span>Password</span>
-            <input
-              type="password"
-              value={password}
-              minLength={6}
-              required
-              autoComplete={isNew ? "new-password" : "current-password"}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+            <label className="field">
+              <span>Email</span>
+              <input
+                type="email"
+                value={email}
+                autoComplete="email"
+                required
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
 
-          <button className="btn" type="submit" disabled={busy}>
-            {busy ? "Please wait..." : isNew ? "Create account" : "Log in"}
-          </button>
+            <label className="field">
+              <span>Password</span>
+              <input
+                type="password"
+                value={password}
+                minLength={6}
+                required
+                autoComplete={isNew ? "new-password" : "current-password"}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
 
-          <p className="switch">
-            {isNew ? "Already have an account? " : "New here? "}
-            <button
-              type="button"
-              className="link-btn"
-              onClick={() => {
-                setIsNew(!isNew);
-                setError("");
-              }}
-            >
-              {isNew ? "Log in" : "Create an account"}
+            <button className="btn" type="submit" disabled={busy}>
+              {busy ? "Please wait..." : isNew ? "Create account" : "Log in"}
             </button>
-          </p>
-        </form>
+
+            <p className="switch">
+              {isNew ? "Already have an account? " : "New here? "}
+              <button
+                type="button"
+                className="link-btn"
+                onClick={() => {
+                  setIsNew(!isNew);
+                  setError("");
+                }}
+              >
+                {isNew ? "Log in" : "Create an account"}
+              </button>
+            </p>
+          </form>
+
+          <Footer />
+        </div>
       </main>
     </div>
   );
