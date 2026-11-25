@@ -14,6 +14,37 @@ const messages = {
   "auth/invalid-email": "Enter a valid email address.",
 };
 
+const LogoIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="3" y="4" width="18" height="17" rx="3" />
+    <path d="M8 2v4M16 2v4M3 10h18M9 15l2 2 4-4" />
+  </svg>
+);
+
+const Sample = ({ tone, day, month, code, line, when }) => (
+  <article className={`tile tone-${tone}`}>
+    <div className="tile-date">
+      <span className="day">{day}</span>
+      <span className="month">{month}</span>
+    </div>
+    <div className="tile-body">
+      <h3>{code}</h3>
+      <p>{line}</p>
+    </div>
+    <span className="when">{when}</span>
+  </article>
+);
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,23 +68,45 @@ export default function Login() {
   return (
     <div className="auth">
       <section className="auth-side">
-        <h1>Your exam routine, one search away</h1>
+        <div className="logo-row">
+          <span className="logo">
+            <LogoIcon />
+          </span>
+          <span>Exam Routine</span>
+        </div>
+
+        <h1>Never miss an exam date</h1>
         <p>
-          Log in with your email, enter your roll number, and see every exam
-          with its date, time, and room.
+          Search a course code and see the date, day, time, room, and how much
+          time is left.
         </p>
 
-        <article className="tile" aria-hidden="true">
-          <div className="tile-date">
-            <span className="day">6</span>
-            <span className="month">Dec</span>
-          </div>
-          <div className="tile-body" style={{ color: "#10243e" }}>
-            <h3>CSE101</h3>
-            <p>Sunday, 10:00 AM, Room 301</p>
-          </div>
-          <span className="when">In 12 days</span>
-        </article>
+        <div className="stack" aria-hidden="true">
+          <Sample
+            tone="later"
+            day="8"
+            month="Dec 2026"
+            code="MAT102"
+            line="Tuesday, 10:00 AM, Room 305"
+            when="In 13 days"
+          />
+          <Sample
+            tone="soon"
+            day="1"
+            month="Dec 2026"
+            code="ENG201"
+            line="Tuesday, 02:00 PM, Room 210"
+            when="In 6 days"
+          />
+          <Sample
+            tone="later"
+            day="6"
+            month="Dec 2026"
+            code="CSE101"
+            line="Sunday, 10:00 AM, Room 301"
+            when="In 11 days"
+          />
+        </div>
       </section>
 
       <main className="auth-main">
