@@ -1,10 +1,8 @@
-// "CSE 101", "cse-101" → "CSE101"
 export const courseKey = (s = "") =>
   String(s)
     .toUpperCase()
     .replace(/[^A-Z0-9.]/g, "");
 
-// 2026-12-05, 05/12/2026 (din/mash/bochor), "5 Dec 2026" shob porte pare
 export const toDate = (s) => {
   if (s instanceof Date) {
     return isNaN(s)
@@ -24,14 +22,19 @@ export const toDate = (s) => {
 export const toISO = (d) =>
   `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
-// "10:00 AM" ba "14:30" theke minute ber kore. "10:00 AM - 1:00 PM" hole prothom time ta nei
-export const startMinutes = (time = "") => {
-  const m = String(time).match(/(\d{1,2})[:.](\d{2})\s*(am|pm)?/i);
-  if (!m) return null;
+const TIME_RE = /(\d{1,2})[:.](\d{2})\s*(am|pm)?/gi;
+const toMin = (m) => {
   let h = +m[1];
-  const min = +m[2];
   const ap = (m[3] || "").toLowerCase();
   if (ap === "pm" && h < 12) h += 12;
   if (ap === "am" && h === 12) h = 0;
-  return h * 60 + min;
+  return h * 60 + +m[2];
+};
+export const startMinutes = (time = "") => {
+  const all = [...String(time).matchAll(TIME_RE)];
+  return all.length ? toMin(all[0]) : null;
+};
+export const endMinutes = (time = "") => {
+  const all = [...String(time).matchAll(TIME_RE)];
+  return all.length > 1 ? toMin(all[1]) : null;
 };

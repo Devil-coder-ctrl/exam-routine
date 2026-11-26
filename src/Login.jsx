@@ -1,18 +1,27 @@
 import { useState } from "react";
 import { auth } from "./firebase";
 import {
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import Footer from "./Footer";
+import { rememberOn, forgetSession } from "./session";
 
 const messages = {
   "auth/invalid-credential":
     "Email or password is wrong. If you are new, create an account first.",
   "auth/email-already-in-use":
     "This email already has an account. Log in instead.",
-  "auth/weak-password": "Use at least 6 characters for the password.",
+  "auth/weak-password": "Use at least 8 characters for the password.",
   "auth/invalid-email": "Enter a valid email address.",
+  "auth/too-many-requests":
+    "Too many attempts. Wait a few minutes and try again.",
+  "auth/network-request-failed": "No internet connection. Try again.",
 };
 
 const LogoIcon = () => (
@@ -46,25 +55,71 @@ const Sample = ({ tone, day, month, code, line, when }) => (
   </article>
 );
 
-export default function Login() {
+export default function Login({ notice = "" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+    setInfo("");
     setBusy(true);
     try {
-      if (isNew) await createUserWithEmailAndPassword(auth, email, password);
-      else await signInWithEmailAndPassword(auth, email, password);
+      // Tick dile browser e thakbe (5 minute rule shoho), na dile tab bondho korle logout
+      await setPersistence(
+        auth,
+        remember ? browserLocalPersistence : browserSessionPersistence,
+      );
+      if (remember) rememberOn();
+      else forgetSession();
+
+      if (isNew) {
+        const cred = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        try {
+          await sendEmailVerification(cred.user);
+        } catch {
+          /* resend button is on the next screen */
+        }
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
     } catch (err) {
+      forgetSession();
       setError(messages[err.code] || "Something went wrong. Try again.");
     }
     setBusy(false);
   };
+
+  const reset = async () => {
+    setError("");
+    setInfo("");
+    if (!email) {
+      setError("Enter your email first, then press Forgot password.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (err) {
+      if (err.code === "auth/too-many-requests") {
+        setError(messages[err.code]);
+        return;
+      }
+    }
+    setInfo(
+      "If an account exists for this email, a reset link has been sent. Check your spam folder too.",
+    );
+  };
+
+  const shownInfo = info || notice;
 
   return (
     <div className="auth">
@@ -125,6 +180,11 @@ export default function Login() {
                 {error}
               </p>
             )}
+            {shownInfo && (
+              <p className="notice" role="status">
+                {shownInfo}
+              </p>
+            )}
 
             <label className="field">
               <span>Email</span>
@@ -142,12 +202,32 @@ export default function Login() {
               <input
                 type="password"
                 value={password}
-                minLength={6}
                 required
+                minLength={isNew ? 8 : undefined}
                 autoComplete={isNew ? "new-password" : "current-password"}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </label>
+
+            <div className="row-opts">
+              <label className="remember">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                <span>Remember me</span>
+              </label>
+              {!isNew && (
+                <button type="button" className="link-btn" onClick={reset}>
+                  Forgot password?
+                </button>
+              )}
+            </div>
+            <p className="hint">
+              Stay signed in if you come back within 5 minutes. Do not tick this
+              on a shared computer.
+            </p>
 
             <button className="btn" type="submit" disabled={busy}>
               {busy ? "Please wait..." : isNew ? "Create account" : "Log in"}
@@ -161,6 +241,7 @@ export default function Login() {
                 onClick={() => {
                   setIsNew(!isNew);
                   setError("");
+                  setInfo("");
                 }}
               >
                 {isNew ? "Log in" : "Create an account"}
