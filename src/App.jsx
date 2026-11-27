@@ -9,6 +9,7 @@ import Login from "./Login";
 import Search from "./Search";
 import Upload from "./Upload";
 import Footer from "./Footer";
+import InstallApp from "./InstallApp";
 import { touch, sessionExpired, forgetSession } from "./session";
 
 const ADMIN_EMAIL = "rahidahmedrokon60@gmail.com"; // shudhu button dekhanor jonno, asol lock Firestore rules e
@@ -188,6 +189,7 @@ export default function App() {
             {user.email[0].toUpperCase()}
           </span>
           <span className="email">{user.email}</span>
+          <InstallApp />
           <button onClick={logout}>Log out</button>
         </div>
       </header>

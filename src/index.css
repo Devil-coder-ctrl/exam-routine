@@ -743,3 +743,231 @@ input {
   color: var(--muted);
   font-size: 0.8rem;
 }
+/* ---------- Animations ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(var(--tx, 0), 0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translate(var(--tx, 0), -10px)
+      rotate(calc(var(--rot, 0deg) + 0.8deg));
+  }
+}
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-70px, -50px) scale(1.2);
+  }
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 105, 79, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(244, 105, 79, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 105, 79, 0);
+  }
+}
+
+/* Bam panel */
+.auth-side {
+  position: relative;
+  overflow: hidden;
+}
+.auth-side::before {
+  content: "";
+  position: absolute;
+  right: -120px;
+  bottom: -140px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(244, 105, 79, 0.35),
+    transparent 65%
+  );
+  pointer-events: none;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.auth-side > * {
+  position: relative;
+  z-index: 1;
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.auth-side > :nth-child(1) {
+  animation-delay: 0.05s;
+}
+.auth-side > :nth-child(2) {
+  animation-delay: 0.15s;
+}
+.auth-side > :nth-child(3) {
+  animation-delay: 0.25s;
+}
+.auth-side > :nth-child(4) {
+  animation-delay: 0.4s;
+}
+.auth-side .logo {
+  animation: pop 0.6s 0.1s cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+}
+
+/* Bhashmaan ticket gulo */
+.stack .tile {
+  will-change: transform;
+  animation: float 6s ease-in-out infinite;
+}
+.stack .tile:nth-child(1) {
+  --rot: -2deg;
+  --tx: 0px;
+  animation-delay: 0s;
+}
+.stack .tile:nth-child(2) {
+  --rot: 1.5deg;
+  --tx: 14px;
+  animation-delay: -2s;
+}
+.stack .tile:nth-child(3) {
+  --rot: -1deg;
+  --tx: 4px;
+  animation-delay: -4s;
+}
+
+/* Dan er form */
+.auth-card > * {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.auth-card > :nth-child(1) {
+  animation-delay: 0.15s;
+}
+.auth-card > :nth-child(2) {
+  animation-delay: 0.2s;
+}
+.auth-card > :nth-child(3) {
+  animation-delay: 0.25s;
+}
+.auth-card > :nth-child(4) {
+  animation-delay: 0.3s;
+}
+.auth-card > :nth-child(5) {
+  animation-delay: 0.35s;
+}
+.auth-card > :nth-child(6) {
+  animation-delay: 0.4s;
+}
+.auth-card > :nth-child(7) {
+  animation-delay: 0.45s;
+}
+.auth-card > :nth-child(8) {
+  animation-delay: 0.5s;
+}
+.auth-card > :nth-child(9) {
+  animation-delay: 0.55s;
+}
+.auth-card > :nth-child(10) {
+  animation-delay: 0.6s;
+}
+.auth-card > .error {
+  animation: shake 0.45s ease-in-out;
+}
+.auth-card > .notice {
+  animation: rise 0.35s ease-out backwards;
+}
+
+/* Button */
+.btn {
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+.btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+.btn:disabled::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  vertical-align: -2px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* 3 din er moddhe thaka exam er chip */
+.stack .tone-soon .when,
+.tile.next.tone-soon .when {
+  animation: pulse 2s ease-out infinite;
+}
+
+/* Jara animation chay na (accessibility setting) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
+}
+.who .install {
+  background: var(--primary);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+.who .install:hover {
+  background: var(--primary-hover);
+  border-color: transparent;
+}

@@ -167,7 +167,11 @@ export default function Login({ notice = "" }) {
 
       <main className="auth-main">
         <div className="auth-col">
-          <form className="auth-card" onSubmit={submit}>
+          <form
+            className="auth-card"
+            key={isNew ? "signup" : "login"}
+            onSubmit={submit}
+          >
             <h2>{isNew ? "Create your account" : "Welcome back"}</h2>
             <p className="sub">
               {isNew
